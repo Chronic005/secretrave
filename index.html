@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mission 1: Secret Rave</title>
+  <style>
+    body {
+      background-color: #0e0e0e;
+      color: #00ff00;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      overflow: hidden;
+    }
+    h1, p {
+      margin: 10px 0;
+    }
+    .intro, .questions, .message-container, .gate {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .question-container {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .question-container.show {
+      display: block;
+      opacity: 1;
+    }
+    .option {
+      padding: 15px;
+      background-color: #1a1a1a;
+      border: 1px solid #00ff00;
+      color: #00ff00;
+      font-size: 18px;
+      cursor: pointer;
+      margin: 10px auto;
+      width: 80%;
+      transition: background-color 0.3s, transform 0.2s;
+      display: block;
+    }
+    .option:hover {
+      background-color: #333;
+    }
+    .option:active {
+      transform: scale(0.95);
+    }
+    #missionComplete {
+      font-size: 30px;
+      color: #32cd32;
+    }
+    #accessingFile, #secretMessage {
+      font-size: 24px;
+      color: #ffcc00;
+    }
+    input[type="text"] {
+      padding: 10px;
+      background-color: #1a1a1a;
+      border: 1px solid #00ff00;
+      color: #00ff00;
+      font-family: inherit;
+      font-size: 16px;
+      margin-top: 15px;
+      width: 60%;
+      text-align: center;
+    }
+    button {
+      background: none;
+      border: none;
+      font: inherit;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Gate Page -->
+  <div class="gate">
+    <h1>🚪 Enter Passphrase to Begin 🚪</h1>
+    <input type="text" id="passphrase" placeholder="Enter passphrase..." />
+    <button class="option" id="enterBtn">Enter</button>
+    <p id="error" style="color: red; display: none;">Wrong passphrase. Try again.</p>
+  </div>
+
+  <!-- Cover Page -->
+  <div class="intro hidden">
+    <img src="Secretravewebsite.png" alt="Cover Image" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;" />
+    <h1>🚨 Mission: Secret Rave 🚨</h1>
+    <p>Get ready, Rawad. Answer the questions to unlock the secret rave file. Proceed with <strong>caution</strong>.</p>
+    <button id="startBtn" class="option">Start Mission</button>
+  </div>
+
+  <!-- Questions -->
+  <div id="questionsContainer" class="questions hidden">
+    <div id="question1" class="question-container">
+      <p>What's your first rave memory?</p>
+      <button class="option" onclick="nextQuestion(2)">Falling in love with a blonde</button>
+      <button class="option" onclick="nextQuestion(2)">Getting lost in the crowd</button>
+      <button class="option" onclick="nextQuestion(2)">Puking from molly (I mean excitement)</button>
+    </div>
+
+    <div id="question2" class="question-container">
+      <p>You're on the dancefloor and someone bumps into you. What's your reaction?</p>
+      <button class="option" onclick="nextQuestion(3)">Bump him back and start a rave fight</button>
+      <button class="option" onclick="nextQuestion(3)">Laugh and give them a high-five or a hug</button>
+      <button class="option" onclick="nextQuestion(3)">Stare them down like a boss</button>
+    </div>
+
+    <div id="question3" class="question-container">
+      <p>You find yourself in the middle of a rave, but Raji and Rami are gone. What do you do?</p>
+      <button class="option" onclick="nextQuestion(4)">Stop raving and look for them everywhere</button>
+      <button class="option" onclick="nextQuestion(4)">your night is ruined, you drive back home</button>
+      <button class="option" onclick="nextQuestion(4)">Keep dancing without caring</button>
+    </div>
+
+    <div id="question4" class="question-container">
+        <p>Let's say we were raving together, suddenly I got a panic attack, what would you do?</p>
+        <button class="option" onclick="completeMission()">Pull me out to a quiet place and give me a hug</button>
+        <button class="option" onclick="completeMission()">AWKWARD the girl you brought just ruined the vibe</button>
+        <button class="option" onclick="completeMission()">Try to dance with me and get me out of it</button>
+    </div>
+
+
+    <!-- Final Message -->
+    <div id="missionComplete" class="hidden message-container">
+      <p>Mission Complete! 🎉</p>
+      <p>👏👏👏</p>
+    </div>
+
+    <!-- Accessing Secret File -->
+    <div id="accessingFile" class="hidden message-container">
+      <p>Accessing Secret Rave File...</p>
+    </div>
+
+    <!-- Secret Message -->
+    <div id="secretMessage" class="hidden message-container">
+      <p>Secret File: "I can't wait for our first rave together! It’s going to be legendary!"</p>
+    </div>
+  </div>
+
+  <!-- Audio that loops continuously -->
+  <audio autoplay loop>
+    <source src="JAH DO NI.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    // Define checkPassphrase before it's used
+    function checkPassphrase() {
+      const input = document.getElementById('passphrase').value.trim().toLowerCase();
+      const correct = 'electric dreams';
+      const errorEl = document.getElementById('error');
+
+      if (input === correct) {
+        document.querySelector('.gate').classList.add('hidden');
+        document.querySelector('.intro').classList.remove('hidden');
+      } else {
+        errorEl.style.display = 'block';
+      }
+    }
+
+    // Attach checkPassphrase to the Enter button
+    document.getElementById('enterBtn').addEventListener('click', checkPassphrase);
+
+    // Start the mission when the user clicks the "Start Mission" button
+    document.getElementById('startBtn').addEventListener('click', function () {
+      document.querySelector('.intro').classList.add('hidden');
+      document.getElementById('questionsContainer').classList.remove('hidden');
+      showQuestion(1);
+    });
+
+    // Show the question based on question number
+    function showQuestion(number) {
+      const question = document.getElementById('question' + number);
+      question.classList.add('show');
+    }
+
+    // Hide the current question and show the next one
+    function nextQuestion(nextNum) {
+      const current = document.getElementById('question' + (nextNum - 1));
+      const next = document.getElementById('question' + nextNum);
+      current.classList.remove('show');
+      next.classList.add('show');
+    }
+
+    // Complete the mission and show the completion message
+    function completeMission() {
+      document.getElementById('question4').classList.remove('show');
+      document.getElementById('missionComplete').classList.remove('hidden');
+
+      setTimeout(() => {
+        document.getElementById('missionComplete').classList.add('hidden');
+        accessSecretFile();
+      }, 3000);
+    }
+
+    function accessSecretFile() {
+      document.getElementById('accessingFile').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById('accessingFile').classList.add('hidden');
+        showSecretMessage();
+      }, 3000);
+    }
+
+    function showSecretMessage() {
+      document.getElementById('secretMessage').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
+
